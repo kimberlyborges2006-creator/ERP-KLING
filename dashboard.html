@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+ <meta charset="UTF-8">
+ <title>Dashboard - ERP KLING</title>
+ <style>
+ body { font-family: sans-serif; background:#f1f5f9; margin:0; }
+ .page { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; }
+ .menu { display:flex; gap:15px; margin-bottom:20px; }
+ .menu a { text-decoration:none; color:#111827; font-weight:bold; padding:8px 12px; border:1px solid #ddd; border-radius:8px; }
+ .menu a.ativo { background:#111827; color:white; }
+ .cards { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-top:20px; }
+ .card { background:#f8fafc; border:1px solid #e2e8f0; padding:20px; border-radius:10px; }
+ .card h3 { margin:0; font-size:14px; color:#64748b; }
+ .card p { margin:5px 0 0 0; font-size:28px; font-weight:bold; }
+ table { width:100%; border-collapse:collapse; margin-top:20px; }
+ th, td { border-bottom:1px solid #eee; padding:10px; text-align:left; }
+ </style>
+</head>
+<body>
+ <div class="page">
+ <div class="menu">
+ <a href="produtos.html">Produtos</a>
+ <a href="vendas.html">Vendas</a>
+ <a href="dashboard.html" class="ativo">Dashboard</a>
+ </div>
+ <h2>Dashboard</h2>
+ <div class="cards">
+ <div class="card"><h3>Total de Produtos</h3><p id="qtdProdutos">0</p></div>
+ <div class="card"><h3>Total de Vendas</h3><p id="qtdVendas">0</p></div>
+ <div class="card"><h3>Faturamento</h3><p id="faturamento">R$ 0</p></div>
+ </div>
+ <h3 style="margin-top:30px;">Últimas vendas</h3>
+ <table>
+ <thead><tr><th>Data</th><th>Itens</th><th>Total</th></tr></thead>
+ <tbody id="listaVendas"></tbody>
+ </table>
+ </div>
+<script>
+ let produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
+ let vendas = JSON.parse(localStorage.getItem('vendas') || '[]');
+ 
+ document.getElementById('qtdProdutos').innerText = produtos.length;
+ document.getElementById('qtdVendas').innerText = vendas.length;
+ 
+ let fat = 0;
+ let html = '';
+ vendas.reverse().forEach(v => {
+ let valor = parseFloat(v.total.replace('Total: R$','').trim());
+ fat += valor;
+ html += `<tr><td>${v.data}</td><td>${v.itens.length} itens</td><td>${v.total}</td></tr>`;
+ });
+ document.getElementById('faturamento').innerText = 'R$ ' + fat.toFixed(2);
+ document.getElementById('listaVendas').innerHTML = html || '<tr><td colspan=3>Nenhuma venda ainda</td></tr>';
+</script>
+</body>
+</html>

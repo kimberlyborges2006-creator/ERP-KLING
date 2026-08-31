@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Produtos - ERP KLING</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.page { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; }
+.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+table { width: 100%; border-collapse: collapse; margin-top: 20px;}
+th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
+.form-row { display: flex; gap: 10px; }
+.form-row input { flex: 1; }
+</style>
+</head>
+<body style="display:block; background:#f1f5f9;">
+<div class="page">
+<div class="top">
+    <div class="menu" style="display:flex; gap:15px; margin-bottom:20px;">
+<a href="produtos.html" style="background:#111827; color:white; padding:8px 12px; border-radius:8px; text-decoration:none;">Produtos</a>
+<a href="vendas.html" style="padding:8px 12px; border:1px solid #ddd; border-radius:8px; text-decoration:none; color:#111827;">Vendas</a>
+<a href="dashboard.html" style="padding:8px 12px; border:1px solid #ddd; border-radius:8px; text-decoration:none; color:#111827;">Dashboard</a>
+</div>
+<h2>Produtos</h2>
+<a href="index.html">Sair</a>
+</div>
+
+<div class="form-row">
+<input id="nome" placeholder="Nome do produto ex: Mouse">
+<input id="preco" type="number" placeholder="Preço ex: 99">
+<button onclick="adicionar()" style="padding: 12px 20px; background:#111827; color:white; border:none; border-radius:8px; cursor:pointer;">Adicionar</button>
+</div>
+
+<table>
+<thead><tr><th>Produto</th><th>Preço</th></tr></thead>
+<tbody id="lista"></tbody>
+</table>
+</div>
+
+<script>
+let produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
+function render() {
+const tbody = document.getElementById('lista');
+tbody.innerHTML = '';
+produtos.forEach(p => {
+tbody.innerHTML += `<tr><td>${p.nome}</td><td>R$ ${p.preco}</td></tr>`;
+});
+localStorage.setItem('produtos', JSON.stringify(produtos));
+}
+function adicionar() {
+const nome = document.getElementById('nome').value;
+const preco = document.getElementById('preco').value;
+if(!nome || !preco) return alert('Preencha tudo');
+produtos.push({nome, preco});
+render();
+document.getElementById('nome').value = '';
+document.getElementById('preco').value = '';
+}
+render();
+</script>
+</body>
+</html>

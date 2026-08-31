@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+ <meta charset="UTF-8">
+ <title>Vendas - ERP KLING</title>
+ <link rel="stylesheet" href="style.css">
+ <style>
+ .page { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; }
+ .menu { display:flex; gap:15px; margin-bottom:20px; }
+ .menu a { text-decoration:none; color:#111827; font-weight:bold; padding:8px 12px; border:1px solid #ddd; border-radius:8px; }
+ .menu a.ativo { background:#111827; color:white; }
+ select, button { padding:10px; border-radius:8px; border:1px solid #ddd; }
+ .total { font-size:24px; font-weight:bold; margin-top:20px; text-align:right; }
+ </style>
+</head>
+<body style="display:block; background:#f1f5f9;">
+ <div class="page">
+ <div class="menu">
+ <a href="produtos.html">Produtos</a>
+ <a href="vendas.html" class="ativo">Vendas</a>
+ <a href="dashboard.html">Dashboard</a>
+ </div>
+ <h2>Nova Venda</h2>
+ <div style="margin-top:15px; display:flex; gap:10px;">
+ <select id="selectProduto" style="flex:1"></select>
+ <button onclick="addCarrinho()" style="background:#111827; color:white; cursor:pointer;">Adicionar no carrinho</button>
+ </div>
+ <table style="width:100%; margin-top:20px; border-collapse:collapse;">
+ <thead><tr><th>Produto</th><th>Preço</th></tr></thead>
+ <tbody id="carrinho"></tbody>
+ </table>
+ <div class="total" id="total">Total: R$ 0,00</div>
+ <button onclick="finalizar()" style="width:100%; margin-top:20px; padding:14px; background:#16a34a; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer;">Finalizar Venda</button>
+ </div>
+<script>
+ let produtos = JSON.parse(localStorage.getItem('produtos') || '[]');
+ let carrinho = [];
+ const select = document.getElementById('selectProduto');
+ produtos.forEach((p,i) => select.innerHTML += `<option value="${i}">${p.nome} - R$ ${p.preco}</option>`);
+ 
+ function addCarrinho() {
+ const prod = produtos[select.value];
+ carrinho.push(prod);
+ render();
+ }
+ function render() {
+ let html = '', soma = 0;
+ carrinho.forEach(p => {
+ html += `<tr><td>${p.nome}</td><td>R$ ${p.preco}</td></tr>`;
+ soma += parseFloat(p.preco);
+ });
+ document.getElementById('carrinho').innerHTML = html;
+ document.getElementById('total').innerText = `Total: R$ ${soma.toFixed(2)}`;
+ }
+ function finalizar() {
+ if(carrinho.length==0) return alert('Carrinho vazio');
+ let vendas = JSON.parse(localStorage.getItem('vendas') || '[]');
+ vendas.push({data: new Date().toLocaleString(), total: document.getElementById('total').innerText, itens: carrinho});
+ localStorage.setItem('vendas', JSON.stringify(vendas));
+ alert('Venda finalizada! Salva no Dashboard');
+ carrinho = []; render();
+ }
+</script>
+</body>
+</html>
